@@ -1,5 +1,6 @@
 package springbook.user.dao;
 
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import springbook.user.domain.User;
 
 import java.sql.*;
@@ -14,7 +15,23 @@ public class UserDao {
     // interface 사용하여 connection 관심 분리
     private ConnectionMaker connectionMaker;
 
+    /*
+    // 의존관계 주입을 위한 코드
     public UserDao(ConnectionMaker connectionMaker) {
+        // 의존관계 주입을 위한 코드
+        this.connectionMaker = connectionMaker;
+
+        /** 의존관계 검색
+         * DaoFactory daoFactory = new DaoFactory();
+         this.connectionMaker = daoFactory.connectionMaker();
+
+         spring의 ioc 컨테이너 이용
+         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+         this.connectionMaker = context.getBean("connectionMaker". ConnectionMaker.class);
+    }*/
+
+    // 수정자를 이용한 의존관계 주입
+    public void setConnectionMaker(ConnectionMaker connectionMaker) {
         this.connectionMaker = connectionMaker;
     }
 

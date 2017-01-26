@@ -8,12 +8,11 @@ import org.springframework.context.annotation.Configuration;
  */
 // spring 애플리케이션 컨텍스트 이용으로 변경
 @Configuration
-public class DaoFactory {
+public class CountingDaoFactory {
     @Bean
     public UserDao userDao() {
         /* DaoFactory 확정시 중복 코드 제거
         ConnectionMaker connectionMaker = new DConnectionMaker();*/
-        //ConnectionMaker connectionMaker = connectionMaker();
         // 생성자를 이용한 의존관계 주입
         // UserDao dao = new UserDao(connectionMaker);
 
@@ -26,6 +25,12 @@ public class DaoFactory {
     @Bean
     public ConnectionMaker connectionMaker()  {
         // connection 객체를 생성
+        return new CountingConnectionMaker(realConnectionMaker());
+    }
+
+    @Bean
+    public ConnectionMaker realConnectionMaker()  {
         return new DConnectionMaker();
     }
+
 }

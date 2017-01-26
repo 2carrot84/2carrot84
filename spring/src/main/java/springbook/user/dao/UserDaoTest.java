@@ -2,6 +2,7 @@ package springbook.user.dao;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.GenericXmlApplicationContext;
 import springbook.user.domain.User;
 
 import java.sql.SQLException;
@@ -16,10 +17,17 @@ public class UserDaoTest {
         UserDao dao = new UserDao(connectionMaker);*/
         /* spring 애플리케이션 컨텍스트 이용으로 변경
         UserDao dao = new DaoFactory().userDao();*/
-        ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+        // class bean 사용
+        //ApplicationContext context = new AnnotationConfigApplicationContext(DaoFactory.class);
+
+        // xml bean 설정 사용
+        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
 
         UserDao dao = context.getBean("userDao", UserDao.class);
-        UserDao dao2 = context.getBean("userDao", UserDao.class);
+        /**
+         * application context 이용한 객체 생성과 new 를 이용한 객체 생성의 차이 비교
+         * application Context 를 이용할 경우 싱글톤 형태로 객체 생성(하나의 객체만 생성 후 동일한 객체 리턴)
+         UserDao dao2 = context.getBean("userDao", UserDao.class);
 
         System.out.println(dao);
         System.out.println(dao2);
@@ -29,9 +37,9 @@ public class UserDaoTest {
         UserDao dao4 = factory.userDao();
 
         System.out.println(dao3);
-        System.out.println(dao4);
+        System.out.println(dao4);*/
 
-        /*User user = new User();
+        User user = new User();
         user.setId("whiteship");
         user.setName("백기선");
         user.setPassword("married");
@@ -41,7 +49,7 @@ public class UserDaoTest {
         System.out.println(user.getId() + " 등록 성공");
 
         User user2 = dao.get(user.getId());
-        System.out.println(user2.getName());
-        System.out.println(user2.getId() + "조회 성공");*/
+        System.out.println("name : " + user2.getName());
+        System.out.println("id : " + user2.getId() + " 조회 성공");
     }
 }
