@@ -2,6 +2,7 @@ package springbook.user.dao;
 
 import org.junit.Test;
 import org.junit.Assert;
+import org.junit.runner.JUnitCore;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.context.support.GenericXmlApplicationContext;
@@ -26,11 +27,13 @@ public class UserDaoTest {
         user.setName("백기선");
         user.setPassword("married");
 
+        dao.delete(user.getId());
+
         dao.add(user);
 
         User user2 = dao.get(user.getId());
 
-        Assert.assertThat(user2.getName(), is(user.getName()));
+//        Assert.assertThat(user2.getName(), is(user.getName()));
         Assert.assertThat(user2.getPassword(), is(user.getPassword()));
     }
 
@@ -77,5 +80,7 @@ public class UserDaoTest {
         System.out.println("name : " + user2.getName());
         System.out.println("id : " + user2.getId() + " 조회 성공");
          */
+
+        JUnitCore.main("springbook.user.dao.UserDaoTest");
     }
 }

@@ -54,6 +54,23 @@ public class UserDao {
         c.close();
     }
 
+    public void delete(String id) throws ClassNotFoundException, SQLException {
+        /* 중복 코드의 메소드 추출
+        Class.forName("oracle.jdbc.driver.OracleDriver");
+        Connection c = DriverManager.getConnection("jdbc:oracle:thin:@174.100.29.31:1521:BOONS", "wsemart", "newshin");*/
+        /* connection 관심사 분리
+        Connection c = getConnection();*/
+        Connection c = connectionMaker.makeConnection();
+
+        PreparedStatement ps = c.prepareStatement("delete from users where id = ?");
+        ps.setString(1, id);
+
+        ps.executeUpdate();
+
+        ps.close();;
+        c.close();
+    }
+
     public User get(String id) throws ClassNotFoundException, SQLException {
         /* 중복 코드의 메소드 추출
         Class.forName("oracle.jdbc.driver.OracleDriver");
