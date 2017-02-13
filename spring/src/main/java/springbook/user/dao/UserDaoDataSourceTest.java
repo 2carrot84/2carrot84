@@ -22,7 +22,7 @@ import static org.hamcrest.CoreMatchers.is;
  * Created by 154910 on 2017-01-24.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/applicationContext.xml")
+@ContextConfiguration(locations = "/applicationContext_home.xml")
 public class UserDaoDataSourceTest {
     //@Autowired context에서 변수타입과 일치하는 빈을 찾아줌
     //private ApplicationContext context;

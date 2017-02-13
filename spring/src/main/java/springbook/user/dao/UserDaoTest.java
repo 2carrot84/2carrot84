@@ -19,7 +19,7 @@ public class UserDaoTest {
 
     @Test
     public void addAndGet() throws ClassNotFoundException, SQLException {
-        ApplicationContext context = new GenericXmlApplicationContext("applicationContext.xml");
+        ApplicationContext context = new GenericXmlApplicationContext("applicationContext_home.xml");
 
         UserDao dao = context.getBean("userDao", UserDao.class);
         User user = new User();

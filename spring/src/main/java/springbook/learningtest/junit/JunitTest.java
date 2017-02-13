@@ -18,7 +18,7 @@ import static org.hamcrest.CoreMatchers.*;
  * Created by 154910 on 2017-02-02.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration
+@ContextConfiguration(locations = "/applicationContext.xml")
 public class JunitTest {
     @Autowired
     ApplicationContext context;
@@ -34,7 +34,6 @@ public class JunitTest {
         testObject = this;*/
         Assert.assertThat(testObjects, not(hasItem(this)));
         testObjects.add(this);
-
         Assert.assertThat(contextObject == null || contextObject  == this.context, is(true));
         contextObject = this.context;
     }
@@ -46,7 +45,6 @@ public class JunitTest {
         testObject = this;*/
         Assert.assertThat(testObjects, not(hasItem(this)));
         testObjects.add(this);
-
         Assert.assertTrue(contextObject == null || contextObject  == this.context);
         contextObject = this.context;
     }

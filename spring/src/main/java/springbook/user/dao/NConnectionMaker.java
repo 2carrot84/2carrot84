@@ -10,8 +10,8 @@ import java.sql.SQLException;
 public class NConnectionMaker implements ConnectionMaker {
     @Override
     public Connection makeConnection() throws ClassNotFoundException, SQLException {
-        Class.forName("oracle.jdbc.driver.OracleDriver");
-        Connection c = DriverManager.getConnection("jdbc:oracle:thin:@174.100.29.31:1521:BOONS", "wsemart", "newshin");
+        Class.forName("com.mysql.jdbc.Driver");
+        Connection c = DriverManager.getConnection("jdbc:mysql://localhost/testdb", "dev", "1234qwer");
         return c;
     }
 }
