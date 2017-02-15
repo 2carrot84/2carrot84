@@ -1,4 +1,4 @@
-package springbook.user.dao;
+package springbook.user.dao.datasource;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import springbook.user.domain.User;

@@ -1,4 +1,4 @@
-package springbook.user.dao;
+package springbook.user.dao.datasource;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -6,9 +6,6 @@ import org.junit.Test;
 import org.junit.runner.JUnitCore;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
-import org.springframework.context.support.GenericXmlApplicationContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -22,7 +19,7 @@ import static org.hamcrest.CoreMatchers.is;
  * Created by 154910 on 2017-01-24.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/applicationContext_home.xml")
+@ContextConfiguration(locations = "/applicationContext.xml")
 public class UserDaoDataSourceTest {
     //@Autowired context에서 변수타입과 일치하는 빈을 찾아줌
     //private ApplicationContext context;
@@ -121,7 +118,7 @@ public class UserDaoDataSourceTest {
     }
 
     public static void main(String[] args) throws ClassNotFoundException, SQLException {
-        JUnitCore.main("springbook.user.dao.UserDaoDataSourceTest");
+        JUnitCore.main("springbook.user.dao.datasource.UserDaoDataSourceTest");
 
         // factory class 이용한 application context
         // ApplicationContext context = new AnnotationConfigApplicationContext(DataSourceDaoFactory.class);

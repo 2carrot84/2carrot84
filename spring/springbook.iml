@@ -13,7 +13,7 @@
       <sourceFolder url="file://$MODULE_DIR$/src/test/resource" type="java-test-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" exported="" name="Spring-4.3.4.RELEASE" level="project" />
     <orderEntry type="library" exported="" name="ojdbc6-11.1.0.7.0" level="project" />
