@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import springbook.user.dao.jdbccontext.UserDaoJdbcContext;
 import springbook.user.domain.User;
 
 import java.sql.SQLException;
@@ -24,7 +25,8 @@ public class UserDaoDataSourceTest {
     //@Autowired context에서 변수타입과 일치하는 빈을 찾아줌
     //private ApplicationContext context;
     @Autowired
-    private UserDaoDataSource dao;
+//    private UserDaoDataSource dao;
+    private UserDaoJdbcContext dao;
     private User user1;
     private User user2;
     private User user3;

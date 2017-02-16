@@ -27,6 +27,7 @@
     <!-- 3장 jdbcContext 분리 테스트 용  -->
     <bean id="userDaoJdbcContext" class="springbook.user.dao.jdbccontext.UserDaoJdbcContext">
         <property name="jdbcContext" ref="jdbcContext" />
+        <property name="dataSource" ref="dataSource" />
     </bean>
     <bean id="jdbcContext" class="springbook.user.dao.jdbccontext.JdbcContext">
         <property name="dataSource" ref="dataSource" />
