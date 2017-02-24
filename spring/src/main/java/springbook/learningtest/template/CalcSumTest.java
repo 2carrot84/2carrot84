@@ -1,12 +1,12 @@
 package springbook.learningtest.template;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+        import org.junit.Assert;
+        import org.junit.Before;
+        import org.junit.Test;
 
-import java.io.IOException;
+        import java.io.IOException;
 
-import static org.hamcrest.core.Is.is;
+        import static org.hamcrest.core.Is.is;
 
 /**
  * Created by eguns on 2017. 2. 16..
@@ -31,6 +31,6 @@ public class CalcSumTest {
     @Test
     public void multipleOfNumbers() throws IOException {
         int sum = calculator.calMultiple(filePath);
-        Assert.assertThat(sum, is(24));
+        Assert.assertThat(sum, is(22));
     }
 }
