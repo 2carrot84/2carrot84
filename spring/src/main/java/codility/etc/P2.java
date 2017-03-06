@@ -2,40 +2,39 @@ package codility.etc;
 
 public class P2 {
 	public static void main(String[] args) {
-		System.out.println(P2.solution("09:42", "11:42"));
+		P2 p = new P2();
+		System.out.println(p.solution("10:00", "13:21"));
+		System.out.println(p.solution("09:42", "11:45"));
+		System.out.println(p.solution("00:10", "00:10"));
 	}
 
-	public static int solution(String E, String L) {
+	public int solution(String E, String L) {
 		int ENTRANCE_FEE = 2;
 		int FIRST_HOUR_FEE = 3;
 		int AFTER_FIRST_FEE = 4;
-
 		int totalFee = 0;
 
+		if(!validateTimeFormat(E)) {
+			return -1;
+		}
+		else if(!validateTimeFormat(L)) {
+			return -1;
+		}
+		
 		String[] arrTmp = E.split(":");
-		if(Integer.parseInt(arrTmp[0]) < 0 || Integer.parseInt(arrTmp[0]) >= 24) {
-			return 0;
-		}
-		else if(Integer.parseInt(arrTmp[1]) < 0 || Integer.parseInt(arrTmp[1]) >= 60) {
-			return 0;
-		}
-
 		int entranceTime = Integer.parseInt(arrTmp[0]) * 60 + Integer.parseInt(arrTmp[1]);  
-
 		arrTmp = L.split(":");
-		if(Integer.parseInt(arrTmp[0]) < 0 || Integer.parseInt(arrTmp[0]) >= 24) {
-			return 0;
+		int exitTime = Integer.parseInt(arrTmp[0]) * 60 + Integer.parseInt(arrTmp[1]); 
+		
+		if(entranceTime > exitTime) {
+			return -1;
 		}
-		else if(Integer.parseInt(arrTmp[1]) < 0 || Integer.parseInt(arrTmp[1]) >= 60) {
-			return 0;
-		}
-
-		int exitTime = Integer.parseInt(arrTmp[0]) * 60 + Integer.parseInt(arrTmp[1]);  
-
-		System.out.println("entranceTime : " + entranceTime);
-		System.out.println("exitTime : " + exitTime);
-
+		
 		int timeGap = exitTime - entranceTime;
+		
+		if(timeGap == 0) {
+			return ENTRANCE_FEE;
+		}
 
 		if(timeGap > 0) {
 			totalFee += ENTRANCE_FEE;
@@ -44,6 +43,25 @@ public class P2 {
 		
 		totalFee += ((timeGap/60)-1)*AFTER_FIRST_FEE;
 
+		if((timeGap%60) != 0) {
+			totalFee += AFTER_FIRST_FEE;
+		}
+		
 		return totalFee;
+	}
+	
+	public boolean validateTimeFormat(String time) {
+		if(time.indexOf(':') < 0) 
+			return false;
+		
+		String[] arrTmp = time.split(":");
+		if(Integer.parseInt(arrTmp[0]) < 0 || 24 <= Integer.parseInt(arrTmp[0])) {
+			return false;
+		}
+		else if(Integer.parseInt(arrTmp[1]) < 0 || 60 <= Integer.parseInt(arrTmp[1])) {
+			return false;
+		}
+		
+		return true;
 	}
 }
