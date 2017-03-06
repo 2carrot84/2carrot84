@@ -1,9 +1,5 @@
 package codility.etc;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 public class P2 {
 	public static void main(String[] args) {
 		System.out.println(P2.solution("09:42", "11:42"));
