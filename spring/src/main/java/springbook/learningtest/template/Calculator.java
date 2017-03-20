@@ -10,6 +10,16 @@ import java.io.IOException;
  */
 public class Calculator {
     public Integer calMultiple(String filePath) throws IOException {
+        LineCallback callback = new LineCallback() {
+
+            @Override
+            public Integer doSomethingsWithLine(String line, Integer value) {
+                return value * Integer.parseInt(line);
+            }
+        };
+
+        return this.lineReadTemplate(filePath, callback, 1);
+        /*
         return this.fileReaderTemplate(filePath, new BufferedReaderCallback() {
             @Override
             public Integer doSomethingWithReader(BufferedReader br) throws IOException {
@@ -20,7 +30,7 @@ public class Calculator {
                 }
                 return multiple;
             }
-        });
+        });*/
     }
 
     public Integer calSum(String filePath) throws IOException {
@@ -61,6 +71,9 @@ public class Calculator {
             }
         }*/
 
+        /*
+        계산 로직 제외한 반복되는 로직 분리
+
         return this.fileReaderTemplate(filePath, new BufferedReaderCallback() {
             @Override
             public Integer doSomethingWithReader(BufferedReader br) throws IOException {
@@ -72,6 +85,15 @@ public class Calculator {
                 return sum;
             }
         });
+        */
+
+        return this.lineReadTemplate(filePath, new LineCallback() {
+                    @Override
+                    public Integer doSomethingsWithLine(String line, Integer value) {
+                        return value + Integer.parseInt(line);
+                    }
+                }
+        , 0);
     }
 
     public Integer fileReaderTemplate(String filePath, BufferedReaderCallback callback) throws IOException {
@@ -94,5 +116,22 @@ public class Calculator {
         }
 
         return ret;
+    }
+
+    public Integer lineReadTemplate(String filePath, LineCallback callback, Integer initVal) throws IOException {
+        BufferedReader br = null;
+        Integer res = initVal;
+
+        try {
+            br = new BufferedReader(new FileReader(filePath));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                res = callback.doSomethingsWithLine(line, res);
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        return res;
     }
 }

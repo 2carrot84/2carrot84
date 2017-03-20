@@ -31,6 +31,6 @@ public class CalcSumTest {
     @Test
     public void multipleOfNumbers() throws IOException {
         int sum = calculator.calMultiple(filePath);
-        Assert.assertThat(sum, is(22));
+        Assert.assertThat(sum, is(24));
     }
 }
