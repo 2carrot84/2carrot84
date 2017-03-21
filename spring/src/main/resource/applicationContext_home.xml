@@ -4,9 +4,9 @@
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
     <!-- Connection 객체 이용한 DB 연결 -->
     <bean id="connectionMaker" class="springbook.user.dao.NConnectionMaker" />
-    <bean id="userDao" class="springbook.user.dao.UserDao">
+    <!-- <bean id="userDao" class="springbook.user.dao.UserDao">
         <property name="connectionMaker" ref="connectionMaker" />
-    </bean>
+    </bean> -->
 
     <!-- dataSource 이용한 DB 연결 -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
@@ -26,6 +26,13 @@
 
     <!-- 3장 jdbcContext 분리 테스트 용  -->
     <bean id="userDaoJdbcContext" class="springbook.user.dao.jdbccontext.UserDaoJdbcContext">
+        <property name="dataSource" ref="dataSource" />
+        <property name="jdbcContext" ref="jdbcContext" />
+    </bean>
+    <bean id="jdbcContext" class="springbook.user.dao.jdbccontext.JdbcContext">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    <bean id="userDao" class="springbook.user.dao.jdbccontext.UserDaoJdbcContext">
         <property name="dataSource" ref="dataSource" />
         <property name="jdbcContext" ref="jdbcContext" />
     </bean>

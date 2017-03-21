@@ -9,8 +9,29 @@ import java.io.IOException;
  * Created by eguns on 2017. 2. 16..
  */
 public class Calculator {
-    public Integer calMultiple(String filePath) throws IOException {
-        LineCallback callback = new LineCallback() {
+	public String concatenate(String filePath) throws IOException {
+		LineCallback<String> callback = new LineCallback<String>() {
+			@Override
+			public String doSomethingsWithLine(String line, String value) {
+				// TODO Auto-generated method stub
+				return value + line;
+			}
+		}; 
+		
+		return this.lineReadTemplate(filePath, callback, "");
+	}
+	
+	public Integer calMultiple(String filePath) throws IOException {
+		return this.lineReadTemplate(filePath, new LineCallback<Integer>() {
+			@Override
+			public Integer doSomethingsWithLine(String line, Integer value) {
+				// TODO Auto-generated method stub
+				return value * Integer.parseInt(line);
+			}
+		}, 1);
+		
+    	/* Integer로 고정된 타입을 제네릭스로 변경
+         * LineCallback callback = new LineCallback() {
 
             @Override
             public Integer doSomethingsWithLine(String line, Integer value) {
@@ -18,7 +39,7 @@ public class Calculator {
             }
         };
 
-        return this.lineReadTemplate(filePath, callback, 1);
+        return this.lineReadTemplate(filePath, callback, 1);*/
         /*
         return this.fileReaderTemplate(filePath, new BufferedReaderCallback() {
             @Override
@@ -87,13 +108,20 @@ public class Calculator {
         });
         */
 
-        return this.lineReadTemplate(filePath, new LineCallback() {
+        /*return this.lineReadTemplate(filePath, new LineCallback() {
                     @Override
                     public Integer doSomethingsWithLine(String line, Integer value) {
                         return value + Integer.parseInt(line);
                     }
                 }
-        , 0);
+        , 0);*/
+    	return this.lineReadTemplate(filePath, new LineCallback<Integer>() {
+    		@Override
+    		public Integer doSomethingsWithLine(String line, Integer value) {
+    			// TODO Auto-generated method stub
+    			return value + Integer.parseInt(line);
+    		}
+		}, 0);
     }
 
     public Integer fileReaderTemplate(String filePath, BufferedReaderCallback callback) throws IOException {
@@ -118,7 +146,9 @@ public class Calculator {
         return ret;
     }
 
-    public Integer lineReadTemplate(String filePath, LineCallback callback, Integer initVal) throws IOException {
+    /*
+     * Integer로 고정된 타입을 제네릭스로 변경
+     * public Integer lineReadTemplate(String filePath, LineCallback callback, Integer initVal) throws IOException {
         BufferedReader br = null;
         Integer res = initVal;
 
@@ -133,5 +163,22 @@ public class Calculator {
         }
 
         return res;
+    }*/
+    
+    public <T> T lineReadTemplate(String filePath, LineCallback<T> callback, T initVal) throws IOException {
+    	BufferedReader br = null;
+    	T res = initVal;
+    	
+    	try {
+    		br = new BufferedReader(new FileReader(filePath));
+    		String line = null;
+    		while ((line = br.readLine()) != null) {
+    			res = callback.doSomethingsWithLine(line, res);
+    		}
+    	} catch (FileNotFoundException e) {
+    		e.printStackTrace();
+    	}
+    	
+    	return res;
     }
 }
