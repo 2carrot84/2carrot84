@@ -21,7 +21,7 @@ import springbook.user.domain.User;
  * Created by 154910 on 2017-01-24.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(locations = "/applicationContext.xml")
+@ContextConfiguration(locations = "/applicationContext_home.xml")
 public class UserDaoTest {
     @Autowired
     private UserDao dao;
