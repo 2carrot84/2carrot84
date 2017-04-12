@@ -1,12 +1,12 @@
 package springbook.learningtest.template;
 
-        import org.junit.Assert;
-        import org.junit.Before;
-        import org.junit.Test;
+import static org.hamcrest.core.Is.is;
 
-        import java.io.IOException;
+import java.io.IOException;
 
-        import static org.hamcrest.core.Is.is;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Created by eguns on 2017. 2. 16..
