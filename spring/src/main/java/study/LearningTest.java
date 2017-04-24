@@ -2,11 +2,9 @@ package study;
 
 import org.junit.Assert;
 import org.junit.Test;
+import scala.Int;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by eguns on 2017. 4. 23..
@@ -99,4 +97,83 @@ public class LearningTest {
 
         Assert.assertEquals(expected, numbers);
     }
+
+    @Test
+    public void queueInsertion() {
+        final Queue<String> queue = new LinkedList<>();
+
+        queue.add("first");
+        queue.add("second");
+        queue.add("third");
+
+        Assert.assertEquals("first", queue.remove());
+        Assert.assertEquals("second", queue.remove());
+        Assert.assertEquals("third", queue.peek());
+        Assert.assertEquals("third", queue.remove());
+    }
+
+    @Test
+    public void overWriteKey() {
+        final Map<String, String> preferences = new HashMap<>();
+        preferences.put("like", "jacuzzi");
+        preferences.put("dislike", "steam room");
+
+        Assert.assertEquals("jacuzzi", preferences.get("like"));
+
+        preferences.put("like", "sauna");
+
+        Assert.assertEquals("sauna", preferences.get("like"));
+
+
+    }
+
+    @Test
+    public void treeMapTraversal() {
+        final Map<Integer, String> counts = new TreeMap<>();
+
+        counts.put(4, "four");
+        counts.put(1, "one");
+        counts.put(3, "three");
+        counts.put(2, "two");
+
+        final Iterator<Integer> keys = counts.keySet().iterator();
+
+        Assert.assertEquals(Integer.valueOf(1), keys.next());
+        Assert.assertEquals(Integer.valueOf(2), keys.next());
+        Assert.assertEquals(Integer.valueOf(4), keys.next());
+        Assert.assertEquals(Integer.valueOf(3), keys.next());
+
+    }
+
+    @Test
+    public void setExample() {
+        final Set<String> set = new HashSet<>();
+
+        set.add("hello");
+        set.add("welcome");
+        set.add("goodbye");
+        set.add("bye");
+        set.add("hello");
+
+        Assert.assertEquals(4, set.size());
+
+        final List<String> list = new ArrayList<>();
+
+        list.add("hello");
+        list.add("welcome");
+        list.add("goodbye");
+        list.add("bye");
+        list.add("hello");
+
+        Assert.assertEquals(5, list.size());
+    }
+
+    @Test
+    public void legalBuild() {
+        final Pet.Builder builder = new Pet.Builder();
+        final Pet pet = builder.withPetName("Squidge").withOwnerName("Simon Smith").build();
+
+        Assert.assertEquals("Simon Smith", pet.getOwnerName());
+    }
+
 }
