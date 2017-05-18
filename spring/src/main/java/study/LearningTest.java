@@ -187,4 +187,25 @@ public class LearningTest {
         Assert.assertEquals("Simon Smith", pet.getOwnerName());
     }
 
+    @Test
+    public void objectMemoryAssignment() {
+        List<String> list1 = new ArrayList<>(20);
+
+        list1.add("entry in list1");
+        Assert.assertEquals(list1.size(),1);
+
+        List list2 = list1;
+        list2.add("entry in list2");
+        Assert.assertEquals(list1.size(),2);
+    }
+
+    @Test
+    public void stringChanges() {
+        final String greeting = "Good Morning, Dave";
+        final String substring = greeting.substring(4);
+
+
+
+    }
+
 }
