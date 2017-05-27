@@ -1,5 +1,8 @@
 package springbook.user.service;
 
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.TransactionStatus;
+import org.springframework.transaction.support.DefaultTransactionDefinition;
 import springbook.user.dao.jdbcTemplate.UserDao;
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
@@ -14,19 +17,56 @@ public class UserService implements UserLevelUpgradePolicy {
     public static final int MIN_RECCOMEND_FOR_GOLD = 30;
 
     UserDao userDao;
+//    private DataSource dataSource;
+    private PlatformTransactionManager transactionManager;
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
     }
 
-    public void upgradeLevels() {
-        List<User> users = userDao.getAll();
+//    public void setDataSource(DataSource dataSource) {
+//        this.dataSource = dataSource;
+//    }
 
-        for (User user : users) {
-            if(canUpdatedLevel(user)) {
-                upgradeLevel(user);
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = transactionManager;
+    }
+
+    public void upgradeLevels() throws Exception {
+        TransactionStatus status = transactionManager.getTransaction(new DefaultTransactionDefinition());
+
+        try {
+
+            List<User> users = userDao.getAll();
+
+            for (User user : users) {
+                if(canUpdatedLevel(user)) {
+                    upgradeLevel(user);
+                }
             }
-            /*
+            transactionManager.commit(status);
+        }
+        catch (Exception e) {
+            transactionManager.rollback(status);
+            throw e;
+        }
+    }
+
+    /*
+    public void upgradeLevels() throws Exception {
+        TransactionSynchronizationManager.initSynchronization();
+        Connection c = DataSourceUtils.getConnection(dataSource);
+        c.setAutoCommit(false);
+
+        try {
+
+            List<User> users = userDao.getAll();
+
+            for (User user : users) {
+                if(canUpdatedLevel(user)) {
+                    upgradeLevel(user);
+                }
+            *//*
             코드 개선전
             Boolean changed = null;
             if(user.getLevel() == Level.BASIC && user.getLogin() >= 50) {
@@ -46,9 +86,20 @@ public class UserService implements UserLevelUpgradePolicy {
 
             if(changed) {
                 userDao.update(user);
-            }*/
+            }*//*
+            }
+            c.commit();
         }
-    }
+        catch (Exception e) {
+            c.rollback();
+            throw e;
+        }
+        finally {
+            DataSourceUtils.releaseConnection(c,dataSource);
+            TransactionSynchronizationManager.unbindResource(this.dataSource);
+            TransactionSynchronizationManager.clearSynchronization();
+        }
+    }*/
 
     @Override
     public boolean canUpdatedLevel(User user) {
