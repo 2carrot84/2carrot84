@@ -1,5 +1,7 @@
 package springbook.user.service;
 
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.DefaultTransactionDefinition;
@@ -19,6 +21,11 @@ public class UserService implements UserLevelUpgradePolicy {
     UserDao userDao;
 //    private DataSource dataSource;
     private PlatformTransactionManager transactionManager;
+    private MailSender mailSender;
+
+    public void setMailSender(MailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     public void setUserDao(UserDao userDao) {
         this.userDao = userDao;
@@ -118,7 +125,38 @@ public class UserService implements UserLevelUpgradePolicy {
         else if(user.getLevel() == Level.SILVER) user.setLevel(Level.GOLD);*/
         user.upgradeLevel();
         userDao.update(user);
+        sendUpgradeEMail(user);
     }
+
+    private void sendUpgradeEMail(User user) {
+        SimpleMailMessage mailMessage = new SimpleMailMessage();
+
+        mailMessage.setTo("useradmin@ksug.org");
+        mailMessage.setFrom(user.getEmail());
+        mailMessage.setSubject("Upgrade 안내");
+        mailMessage.setText(user.getName()+ " 님의 등깁이 " + user.getLevel().name() + " 로 업그레이드 되었습니다.");
+
+        this.mailSender.send(mailMessage);
+    }
+    /*private void sendUpgradeEMail(User user) {
+        Properties props = new Properties();
+        props.put("mail.stmp.host", "mail.ksug.org");
+        Session s = Session.getInstance(props, null);
+
+        MimeMessage message = new MimeMessage(s);
+
+        try {
+            message.setFrom(new InternetAddress("useradmin@ksug.org"));
+            message.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
+            message.setSubject("Upgrade 안내");
+            message.setText(user.getName()+ " 님의 등깁이 " + user.getLevel().name() + " 로 업그레이드 되었습니다.");
+
+            Transport.send(message);
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+
+    }*/
 
     public void add(User user) {
         if(user.getLevel() == null) user.setLevel(Level.BASIC);

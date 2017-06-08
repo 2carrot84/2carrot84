@@ -1,10 +1,5 @@
 package springbook.user.dao.jdbcTemplate;
 
-import static org.hamcrest.CoreMatchers.is;
-
-import java.sql.SQLException;
-import java.util.List;
-
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -14,9 +9,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
+
+import java.sql.SQLException;
+import java.util.List;
+
+import static org.hamcrest.CoreMatchers.is;
 
 /**
  * Created by 154910 on 2017-01-24.
@@ -32,9 +31,9 @@ public class UserDaoTest {
 
     @Before // @Test 메소드가 실행되기 전에 실행됨
     public void setUp() {
-        this.user1 = new User("gyumee", "park.sc", "springno1", Level.BASIC, 1, 0);
-        this.user2 = new User("leegw700", "lee.gw", "springno2", Level.SILVER, 55, 10);
-        this.user3 = new User("bumjin", "park.bj", "springno3", Level.GOLD, 100, 40);
+        this.user1 = new User("gyumee", "park.sc", "springno1", Level.BASIC, 1, 0, "gyumee@naver.com");
+        this.user2 = new User("leegw700", "lee.gw", "springno2", Level.SILVER, 55, 10, "leegw700@naver.com");
+        this.user3 = new User("bumjin", "park.bj", "springno3", Level.GOLD, 100, 40, "bumjin@naver.com");
     }
 
     @Test
@@ -67,6 +66,7 @@ public class UserDaoTest {
         Assert.assertThat(user1.getLevel(), is(user2.getLevel()));
         Assert.assertThat(user1.getLogin(), is(user2.getLogin()));
         Assert.assertThat(user1.getRecommend(), is(user2.getRecommend()));
+        Assert.assertThat(user1.getEmail(), is(user2.getEmail()));
     }
     
     @Test
@@ -118,6 +118,7 @@ public class UserDaoTest {
         user1.setLevel(Level.GOLD);
         user1.setLogin(1000);
         user1.setRecommend(999);
+        user1.setEmail("oh.mk@naver.com");
         dao.update(user1);
 
         User user1update = dao.get(user1.getId());

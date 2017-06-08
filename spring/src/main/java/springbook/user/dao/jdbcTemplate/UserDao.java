@@ -1,17 +1,14 @@
 package springbook.user.dao.jdbcTemplate;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.List;
-
-import javax.sql.DataSource;
-
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-
 import springbook.user.domain.Level;
 import springbook.user.domain.User;
+
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.List;
 
 /**
  * Created by 154910 on 2017-01-24.
@@ -34,6 +31,7 @@ public class UserDao {
             user.setLevel(Level.valueOf(rs.getInt("level")));
             user.setLogin(rs.getInt("login"));
             user.setRecommend(rs.getInt("recommend"));
+            user.setEmail(rs.getString("email"));
 			return user;
 		}
 	}; 
@@ -49,8 +47,8 @@ public class UserDao {
     }
 
     public void add(final User user) {
-    	this.jdbcTemplate.update("insert into users(id, name, password, level, login, recommend) values(?, ?, ?, ?, ?, ?)",
-    			user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend());
+    	this.jdbcTemplate.update("insert into users(id, name, password, level, login, recommend, email) values(?, ?, ?, ?, ?, ?, ?)",
+    			user.getId(), user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail());
     }
 
     public User get(String id) {
@@ -64,7 +62,7 @@ public class UserDao {
     }
 
 	public void update(User user) {
-    	this.jdbcTemplate.update("update users set name = ?, password = ?, level = ?, login = ?, recommend = ? " +
-				"where id = ?", user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getId());
+    	this.jdbcTemplate.update("update users set name = ?, password = ?, level = ?, login = ?, recommend = ?, email = ? " +
+				"where id = ?", user.getName(), user.getPassword(), user.getLevel().intValue(), user.getLogin(), user.getRecommend(), user.getEmail(), user.getId());
 	}
 }

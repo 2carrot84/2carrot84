@@ -7,6 +7,7 @@ package study.polymorphism;
 interface I {
     int x = 0;
     String x();
+    String y();
 }
 
 interface I2 {

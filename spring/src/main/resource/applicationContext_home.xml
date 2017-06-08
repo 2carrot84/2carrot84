@@ -46,6 +46,7 @@
     <bean id="userService" class="springbook.user.service.UserService">
         <property name="userDao" ref="userDao" />
         <property name="transactionManager" ref="transactionManager" />
+        <property name="mailSender" ref="mailSender" />
         <!--<property name="dataSource" ref="dataSource" />-->
     </bean>
 
@@ -53,5 +54,9 @@
     <bean id="message"
           class="springbook.learningtest.factorybean.MessageFactoryBean">
         <property name="text" value="Factory Bean" />
+    </bean>
+
+    <bean id="mailSender" class="springbook.user.service.DummyMailSender">
+        <!--<property name="host" value="mail.server.com" />-->
     </bean>
 </beans>
