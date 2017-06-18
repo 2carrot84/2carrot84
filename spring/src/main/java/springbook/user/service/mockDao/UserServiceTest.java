@@ -1,27 +1,30 @@
 package springbook.user.service.mockDao;
 
-import org.junit.Before;
-import org.junit.Test;
-<<<<<<< HEAD
-import org.mockito.ArgumentCaptor;
-import org.mockito.Matchers;
-import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
-import springbook.user.dao.aop.MockUserDao;
-import springbook.user.dao.aop.UserDao;
-import springbook.user.domain.Level;
-import springbook.user.domain.User;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static springbook.user.service.UserServiceImpl.MIN_RECCOMEND_FOR_GOLD;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.mockito.Mockito.*;
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
-import static springbook.user.service.UserServiceImpl.MIN_RECCOMEND_FOR_GOLD;
+import org.junit.Before;
+import org.junit.Test;
+import org.mockito.ArgumentCaptor;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+
+import springbook.user.dao.aop.MockUserDao;
+import springbook.user.dao.aop.UserDao;
+import springbook.user.domain.Level;
+import springbook.user.domain.User;
 
 /**
  * Created by eguns on 2017. 5. 16..
@@ -69,41 +72,6 @@ public class UserServiceTest {
     	assertThat(mailMessage.get(1).getTo()[0], is(users.get(3).getEmail()));
     }
     
-=======
-import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
-import springbook.user.dao.aop.MockUserDao;
-import springbook.user.domain.Level;
-import springbook.user.domain.User;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-
-import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertThat;
-import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
-import static springbook.user.service.UserServiceImpl.MIN_RECCOMEND_FOR_GOLD;
-
-/**
- * Created by eguns on 2017. 5. 16..
- */
-public class UserServiceTest {
-    List<User> users;
-
-    @Before
-    public void setUp() {
-        users = Arrays.asList(
-                new User("bumjin", "박범진", "p1", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER-1, 0, "bumjin@naver.com"),
-                new User("joytouch", "강명성", "p2", Level.BASIC, MIN_LOGCOUNT_FOR_SILVER, 0, "joytuch@naver.com"),
-                new User("erwins", "신승한", "p3", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD-1, "erwins@naver.com"),
-                new User("madnite1", "이상호", "p4", Level.SILVER, 60, MIN_RECCOMEND_FOR_GOLD, "madnite1@naver.com"),
-                new User("green", "오민규", "p5", Level.GOLD, 100, Integer.MIN_VALUE, "green@naver.com")
-        );
-    }
-
->>>>>>> refs/remotes/origin/master
     @Test
     public void upgradeLevels() throws Exception {
         UserServiceImpl userServiceImpl = new UserServiceImpl();
