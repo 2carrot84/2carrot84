@@ -43,11 +43,13 @@
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
         <property name="dataSource" ref="dataSource" />
     </bean>
-    <bean id="userService" class="springbook.user.service.UserService">
-        <property name="userDao" ref="userDao" />
+    <bean id="userService" class="springbook.user.service.UserServiceTx">
         <property name="transactionManager" ref="transactionManager" />
+        <property name="userService" ref="userServiceimpl" />
+    </bean>
+    <bean id="userServiceimpl" class="springbook.user.service.UserServiceImpl">
+        <property name="userDao" ref="userDao" />
         <property name="mailSender" ref="mailSender" />
-        <!--<property name="dataSource" ref="dataSource" />-->
     </bean>
 
     <!-- 6장 factoryBean 테스트용 -->

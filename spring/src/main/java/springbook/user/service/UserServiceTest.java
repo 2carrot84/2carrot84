@@ -1,11 +1,13 @@
 package springbook.user.service;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -14,13 +16,16 @@ import springbook.user.domain.Level;
 import springbook.user.domain.User;
 
 import javax.sql.DataSource;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
-import static springbook.user.service.UserService.MIN_LOGCOUNT_FOR_SILVER;
-import static springbook.user.service.UserService.MIN_RECCOMEND_FOR_GOLD;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.fail;
+import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
+import static springbook.user.service.UserServiceImpl.MIN_RECCOMEND_FOR_GOLD;
 
 /**
  * Created by eguns on 2017. 5. 16..
@@ -30,6 +35,9 @@ import static springbook.user.service.UserService.MIN_RECCOMEND_FOR_GOLD;
 public class UserServiceTest {
     @Autowired
     UserService userService;
+
+    @Autowired
+    UserServiceImpl userServiceImpl;
 
     @Autowired
     UserDao userDao;
@@ -70,18 +78,23 @@ public class UserServiceTest {
         User userWithLevelRead = userDao.get(userWithLevel.getId());
         User userWithoutLevelRead = userDao.get(userWithoutLevel.getId());
 
-        Assert.assertThat(userWithLevelRead.getLevel(), is(userWithLevel.getLevel()));
-        Assert.assertThat(userWithoutLevelRead.getLevel(), is(Level.BASIC));
+        assertThat(userWithLevelRead.getLevel(), is(userWithLevel.getLevel()));
+        assertThat(userWithoutLevelRead.getLevel(), is(Level.BASIC));
     }
 
     @Test
+    @DirtiesContext
     public void upgradeLevels() throws Exception {
         userDao.deleteAll();
         for (User user: users) {
             userDao.add(user);
         }
 
-        userService.upgradeLevels();
+        // 컨텍스트의 di 설정을 변경
+        MockMailSender mockMailSender = new MockMailSender();
+        userServiceImpl.setMailSender(mockMailSender);
+
+        userServiceImpl.upgradeLevels();
 
         /*checkLevel(users.get(0), Level.BASIC);
         checkLevel(users.get(1), Level.SILVER);
@@ -95,21 +108,29 @@ public class UserServiceTest {
         checkLevelUpgraded(users.get(3), true);
         checkLevelUpgraded(users.get(4), false);
 
+        List<String> request = mockMailSender.getRequests();
+
+        assertThat(request.size(), is(2));
+        assertThat(request.get(0), is(users.get(1).getEmail()));
+        assertThat(request.get(1), is(users.get(3).getEmail()));
     }
 
     @Test
     public void upgradeAllOrNothing() throws Exception {
-        UserService testUserService = new TestUserService(users.get(3).getId());
+        UserServiceImpl testUserService = new TestUserService(users.get(3).getId());
         testUserService.setUserDao(this.userDao);
-        testUserService.setTransactionManager(this.transactionManager);
         testUserService.setMailSender(this.mailSender);
+
+        UserServiceTx txUserService = new UserServiceTx();
+        txUserService.setUserService(testUserService);
+        txUserService.setTransactionManager(transactionManager);
 
         userDao.deleteAll();
 
         for (User user: users) userDao.add(user);
         try {
-            testUserService.upgradeLevels();
-            Assert.fail("TestUserServiceException expected");
+            txUserService.upgradeLevels();
+            fail("TestUserServiceException expected");
         }
         catch (TestUserServiceException e) {
 
@@ -123,25 +144,25 @@ public class UserServiceTest {
         User userUpdate = userDao.get(user.getId());
 
         if(upgraded) {
-            Assert.assertThat(userUpdate.getLevel(), is(user.getLevel().nextLevel()));
+            assertThat(userUpdate.getLevel(), is(user.getLevel().nextLevel()));
         }
         else {
-            Assert.assertThat(userUpdate.getLevel(), is(user.getLevel()));
+            assertThat(userUpdate.getLevel(), is(user.getLevel()));
         }
     }
 
     private void checkLevel(User user, Level expctedLevel) {
         User userUpdate = userDao.get(user.getId());
-        Assert.assertThat(userUpdate.getLevel(), is(expctedLevel));
+        assertThat(userUpdate.getLevel(), is(expctedLevel));
     }
 
 
     @Test
     public void bean() {
-        Assert.assertThat(this.userService, is(notNullValue()));
+        assertThat(this.userService, is(notNullValue()));
     }
 
-    static class TestUserService extends UserService {
+    static class TestUserService extends UserServiceImpl {
         private String id;  // 강제 익셉션 발생할 id
 
         private TestUserService(String id) {
@@ -155,6 +176,24 @@ public class UserServiceTest {
     }
 
     static private class TestUserServiceException extends RuntimeException {
+    }
+    
+    static class MockMailSender implements MailSender {
+        private List<String> requests = new ArrayList<>();
+
+        public List<String> getRequests() {
+            return requests;
+        }
+        
+        @Override
+        public void send(SimpleMailMessage simpleMailMessage) throws MailException {
+            requests.add(simpleMailMessage.getTo()[0]);
+        }
+
+        @Override
+        public void send(SimpleMailMessage... simpleMailMessages) throws MailException {
+
+        }
     }
 }
 
