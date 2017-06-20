@@ -1,0 +1,51 @@
+package springbook.learningtest.reflect;
+
+import org.junit.Test;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
+
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertThat;
+
+/**
+ * Created by eguns on 2017. 6. 20..
+ */
+public class ReflectTest {
+    @Test
+    public void reflectTest() throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
+        String name = "lee";
+        Method method = String.class.getMethod("length");
+        int length = (int)method.invoke(name);
+        assertThat(length, is(3));
+        assertThat(name.length(), is(3));
+    }
+
+    @Test
+    public void simpleProxy() {
+        Hello hello = new HelloTarget();
+        assertThat(hello.sayHello("Lee"), is("Hello, Lee") );
+        assertThat(hello.sayHi("Lee"), is("Hi, Lee") );
+        assertThat(hello.sayThankyou("Lee"), is("Thank You, Lee") );
+
+        Hello proxiedHello = new HelloUppercase(new HelloTarget());
+
+        assertThat(proxiedHello.sayHello("Lee"), is("HELLO, LEE") );
+        assertThat(proxiedHello.sayHi("Lee"), is("HI, LEE") );
+        assertThat(proxiedHello.sayThankyou("Lee"), is("THANK YOU, LEE") );
+
+        Hello proxiedHandler = (Hello) Proxy.newProxyInstance(
+                getClass().getClassLoader(),
+                new Class[]{Hello.class},
+                new UppercaseHandler(new HelloTarget())
+        );
+
+        assertThat(proxiedHandler.sayHello("Lee"), is("HELLO, LEE") );
+        assertThat(proxiedHandler.sayHi("Lee"), is("HI, LEE") );
+        assertThat(proxiedHandler.sayThankyou("Lee"), is("THANK YOU, LEE") );
+
+
+
+    }
+}
