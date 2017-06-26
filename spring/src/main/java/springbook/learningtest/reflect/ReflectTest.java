@@ -34,16 +34,19 @@ public class ReflectTest {
         assertThat(proxiedHello.sayHello("Lee"), is("HELLO, LEE") );
         assertThat(proxiedHello.sayHi("Lee"), is("HI, LEE") );
         assertThat(proxiedHello.sayThankyou("Lee"), is("THANK YOU, LEE") );
+        assertThat(proxiedHello.callName("Lee"), is("Lee") );
 
         Hello proxiedHandler = (Hello) Proxy.newProxyInstance(
                 getClass().getClassLoader(),
-                new Class[]{Hello.class},
-                new UppercaseHandler(new HelloTarget())
+                new Class[]{Hello.class},   // 타깃 인터페이스
+                new UppercaseHandler(new HelloTarget()) // 부가기능과 위임 코드 InvocationHandler 구현 클래스
         );
 
         assertThat(proxiedHandler.sayHello("Lee"), is("HELLO, LEE") );
         assertThat(proxiedHandler.sayHi("Lee"), is("HI, LEE") );
         assertThat(proxiedHandler.sayThankyou("Lee"), is("THANK YOU, LEE") );
+        // 다이내믹 프록시에서 메소드 명이 say로 시작할경우만 적용 테스트
+        assertThat(proxiedHandler.callName("Lee"), is("Lee") );
 
 
 

@@ -1,9 +1,5 @@
 package springbook.learningtest.jdk.proxy;
 
-import static org.hamcrest.core.Is.is;
-
-import java.lang.reflect.Proxy;
-
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 import org.junit.Assert;
@@ -14,12 +10,15 @@ import org.springframework.aop.aspectj.AspectJExpressionPointcut;
 import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.aop.support.DefaultPointcutAdvisor;
 import org.springframework.aop.support.NameMatchMethodPointcut;
-
 import springbook.learningtest.jdk.Hello;
 import springbook.learningtest.jdk.HelloTarget;
 import springbook.learningtest.jdk.UppercaseHandler;
 import springbook.learningtest.spring.pointcut.Bean;
 import springbook.learningtest.spring.pointcut.Target;
+
+import java.lang.reflect.Proxy;
+
+import static org.hamcrest.core.Is.is;
 
 /**
  * Created by eguns on 2017. 4. 12..
@@ -42,8 +41,8 @@ public class DynamicProxyTest {
     @Test
     public void proxyFactoryBean() {
         ProxyFactoryBean pfBean = new ProxyFactoryBean();
-        pfBean.setTarget(new HelloTarget());
-        pfBean.addAdvice(new UppercaseAdvice());
+        pfBean.setTarget(new HelloTarget());	// 타깃 설정
+        pfBean.addAdvice(new UppercaseAdvice());	// 부가기능을 담은 어드바이스 추가
 
         Hello proxiedHello = (Hello) pfBean.getObject();
 
@@ -54,6 +53,7 @@ public class DynamicProxyTest {
     }
 
     static class UppercaseAdvice implements MethodInterceptor {
+    	// target object가 등장하지 않는다
         @Override
         public Object invoke(MethodInvocation methodInvocation) throws Throwable {
             String ret = (String)methodInvocation.proceed();
@@ -66,9 +66,10 @@ public class DynamicProxyTest {
         ProxyFactoryBean pfBean = new ProxyFactoryBean();
         pfBean.setTarget(new HelloTarget());
 
-        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut();
-        pointcut.setMappedName("sayH*");
+        NameMatchMethodPointcut pointcut = new NameMatchMethodPointcut(); // 이름 비교조건 설정
+        pointcut.setMappedName("sayH*");	// sayH로 시작하는 모든 메소드 선택
 
+		// pointcut과 advice를 한번에 설정
         pfBean.addAdvisor(new DefaultPointcutAdvisor(pointcut, new UppercaseAdvice()));
 
         Hello proxiedHello = (Hello) pfBean.getObject();

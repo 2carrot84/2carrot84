@@ -8,7 +8,7 @@ public class Message {
 
     private Message(String text) {
         this.text = text;
-    }
+    }   // 생성자를 통해 오브젝트를 만들 수 없다
 
     public String getText() {
         return text;
@@ -20,5 +20,5 @@ public class Message {
 
     public static Message newMessage(String text) {
         return new Message(text);
-    }
+    }   // 해당 static 메소드를 통해 생성 가능
 }
