@@ -88,19 +88,23 @@ public class DynamicProxyTest {
 					@Override
 					public boolean matches(Class<?> clazz) {
 						// TODO Auto-generated method stub
-						return clazz.getSimpleName().startsWith("HelloT");
+						return clazz.getSimpleName().startsWith("HelloT");	// 클래스 명이 HelloT로 시작하는 클래스만 대상
 					}
 				};
 			}
 		};
-		classMethodPointcut.setMappedName("sayH*");
+		classMethodPointcut.setMappedName("sayH*"); // ClassFilter 조건의 클래스 중 sayH로 시작하는 메소드만 대상
 		
+		// HelloT 이므로 클래스대상
 		checkAdviced(new HelloTarget(), classMethodPointcut, true);
+
 		
 		class HelloWorld extends HelloTarget {};
+		// HelloW 로 대상 아님
 		checkAdviced(new HelloWorld(), classMethodPointcut, false);
 		
 		class HelloToday extends HelloTarget {};
+		// HelloT 로 대상
 		checkAdviced(new HelloToday(), classMethodPointcut, true);
 		
 	}
@@ -112,8 +116,10 @@ public class DynamicProxyTest {
 		Hello proxiedHello = (Hello)pfBean.getObject();
 		
 		if(adviced) {
+			// sayH 여서 대상
 			Assert.assertThat(proxiedHello.sayHello("Toby"), is("HELLO TOBY"));
 			Assert.assertThat(proxiedHello.sayHi("Toby"), is("HI TOBY"));
+			// sayH 가 아니여서 대문자 아님
 			Assert.assertThat(proxiedHello.sayThankyou("Toby"), is("Thank You Toby"));
 		}
 		else {

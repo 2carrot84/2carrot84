@@ -3,7 +3,6 @@ package springbook.user.service.proxyFactoryBean;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.aop.framework.ProxyFactoryBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
@@ -44,7 +43,10 @@ public class UserServiceTest {
     UserService userService;
 
     @Autowired
-    UserServiceImpl userServiceImpl;
+    UserService testUserService;
+
+//    @Autowired
+//    UserServiceImpl userServiceImpl;
 
     @Autowired
     UserDao userDao;
@@ -74,19 +76,11 @@ public class UserServiceTest {
     @Test
     @DirtiesContext
     public void upgradeAllOrNothing() throws Exception {
-        TestUserService testUserService = new TestUserService(users.get(3).getId());
-        testUserService.setUserDao(this.userDao);
-        testUserService.setMailSender(this.mailSender);
-
-        ProxyFactoryBean txProxyFactoryBean = context.getBean("&userService", ProxyFactoryBean.class);
-        txProxyFactoryBean.setTarget(testUserService);
-        UserService txUserService = (UserService)txProxyFactoryBean.getObject();
-
         userDao.deleteAll();
 
         for (User user: users) userDao.add(user);
         try {
-            txUserService.upgradeLevels();
+            testUserService.upgradeLevels();
             fail("TestUserServiceException expected");
         }
         catch (TestUserServiceException e) {
@@ -108,12 +102,15 @@ public class UserServiceTest {
         }
     }
 
-    static class TestUserService extends UserServiceImpl {
-        private String id;  // 강제 익셉션 발생할 id
+    static class TestUserServiceImpl extends UserServiceImpl {
+        private String id = "madnite1";  // 강제 익셉션 발생할 id
 
-        private TestUserService(String id) {
-            this.id = id;
+        public TestUserServiceImpl() {
         }
+
+//        private TestUserServiceImpl(String id) {
+//            this.id = id;
+//        }
 
         public void upgradeLevel(User user) {
             if(user.getId().equals(this.id)) throw new TestUserServiceException();
