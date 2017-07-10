@@ -8,7 +8,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -19,11 +18,12 @@ import springbook.user.service.UserService;
 import springbook.user.service.UserServiceImpl;
 
 import javax.sql.DataSource;
+import java.lang.reflect.Proxy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.fail;
 import static springbook.user.service.UserServiceImpl.MIN_LOGCOUNT_FOR_SILVER;
@@ -74,7 +74,18 @@ public class UserServiceTest {
     }
 
     @Test
-    @DirtiesContext
+    public void advisorAutoProxyCreator() throws Exception{
+        // DefaultAdvisorAutoProxyCreator 에 의해 생성된 클래스는 java.lang.reflect.Proxy.class 객체와 동일
+        assertThat(testUserService, instanceOf(Proxy.class));
+        // 인터페이스를 구현한 객체는 해당 인터페이스와 동일한 객체
+        assertThat(testUserService, instanceOf(UserService.class));
+        assertThat(testUserService, not(instanceOf(springbook.user.service.mockDao.UserServiceImpl.class)));
+
+        assertThat(userService, instanceOf(Proxy.class));
+        assertThat(userService, instanceOf(UserService.class));
+    }
+
+    @Test
     public void upgradeAllOrNothing() throws Exception {
         userDao.deleteAll();
 
@@ -102,10 +113,10 @@ public class UserServiceTest {
         }
     }
 
-    static class TestUserServiceImpl extends UserServiceImpl {
+    static class TestUserService extends UserServiceImpl {
         private String id = "madnite1";  // 강제 익셉션 발생할 id
 
-        public TestUserServiceImpl() {
+        public TestUserService() {
         }
 
 //        private TestUserServiceImpl(String id) {

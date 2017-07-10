@@ -25,9 +25,7 @@ public class Target implements TargetInterface {
 		return 0;
 	}
 
-	@Override
 	public void method() {
-		// TODO Auto-generated method stub
-		
+
 	}
 }
