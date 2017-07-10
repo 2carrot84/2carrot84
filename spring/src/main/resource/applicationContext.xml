@@ -10,10 +10,10 @@
 
     <!-- dataSource 이용한 DB 연결 -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-        <property name="driverClassName" value="oracle.jdbc.driver.OracleDriver" />
-        <property name="url" value="jdbc:oracle:thin:@174.100.29.31:1521:BOONS" />
-        <property name="username" value="wsemart" />
-        <property name="password" value="newshin" />
+        <property name="driverClassName" value="com.mysql.jdbc.Driver" />
+        <property name="url" value="jdbc:mysql://10.253.32.24:7981/testdb" />
+        <property name="username" value="dev" />
+        <property name="password" value="1234qwer" />
     </bean>
     <bean id="userDaoDataSource" class="springbook.user.dao.datasource.UserDaoDataSource">
         <property name="dataSource" ref="dataSource" />
@@ -40,4 +40,28 @@
     <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
         <property name="dataSource" ref="dataSource" />
     </bean>
+    
+    <!-- 6장 AOP -->
+    <bean id="userServiceimpl" class="springbook.user.service.UserServiceImpl">
+        <property name="userDao" ref="userDao" />
+        <property name="mailSender" ref="mailSender" />
+    </bean>
+    <bean id="mailSender" class="springbook.user.service.DummyMailSender">
+        <!--<property name="host" value="mail.server.com" />-->
+    </bean>
+    <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource" />
+    </bean>
+    <bean id="transactionAdvice" class="springbook.user.service.proxyFactoryBean.TransactionAdvice">
+        <property name="transactionManager" ref="transactionManager" />
+    </bean>
+        <bean id="userService" class="springbook.user.service.UserServiceImpl">
+        <property name="userDao" ref="userDao" />
+        <property name="mailSender" ref="mailSender" />
+    </bean>
+    <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator" />
+    <bean id="testUserService" class="springbook.user.service.proxyFactoryBean.UserServiceTest$TestUserService" parent="userService" />
+    <aop:config>
+        <aop:advisor advice-ref="transactionAdvice" pointcut="execution(* *..*ServiceImpl.upgrade*(..))" />
+    </aop:config>
 </beans>
